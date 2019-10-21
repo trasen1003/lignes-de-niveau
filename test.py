@@ -3,10 +3,14 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-
+from math import *
+import time
 ## Fonction de test et constantes
 
 def f(x,y):
+	return cos(x**2 + y**2)
+	
+def g(x,y):
 	return x**2 + y**2
 
 eps1 = 10 ** -2
@@ -32,7 +36,7 @@ eps2 = 10 ** -5
 ## test des fonctions
 
 
-affiche_ligne(f, np.linspace(0.5,1.1,4), [-2,2], [-2,2], eps1, eps2)
+affiche_ligne(f, [0], [-3,3], [-3,3], eps1, eps2)
 #Liste_num = [(Liste_x[k],Liste_y[k]) for k in range(len(Liste_y))]
 #Liste_abscisse = [k for k in range(len(Liste_num))]
 #Liste_ordonnee = [(f(num[0],num[1])-0.5) for num in Liste_num]

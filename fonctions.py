@@ -85,13 +85,17 @@ def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 
 
 def Propagation(f, x0, y0, eps1, eps2, c = 0):
 	def g(p,q) : return f(p,q) - c
+	t1 = time.time()
 	y = y0
 	x = x0 + eps1
 	nb_derive = derive(g,x0,y0)
 	def psi(w):
 		return w - 1/nb_derive*g(x,w)
-	while abs(g(x,y))>eps2 and abs(y) < 10**6: 
+	while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
 		y = psi(y)
+	
+	if time.time() - t1 >= 10**-3 : return x,10**7
+	
 	return x,y 
 
 def decoupe(x_lim = [0,1], y_lim = [0,1], eps = 10**-3) :
@@ -117,17 +121,19 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 	Liste_y = []
 
 	Liste_domaine = decoupe(x_lim, y_lim, eps1)
-
+	k = 0
 	for x_field, y_field in Liste_domaine:
-		if find_seed_global(f, x_field, y_field, eps1/10, eps2, c) != None:
-			x0, y0 = find_seed_global(f, x_field, y_field, eps1/10, eps2, c)
+		k += 1
+		# print(k)
+		if find_seed_global(f, x_field, y_field, eps1/100, eps2, c) != None:
+			x0, y0 = find_seed_global(f, x_field, y_field, eps1/100, eps2, c)
 			Liste_x.append(x0)
 			Liste_y.append(y0)
 			x_plus = x0
 			x_moins = x0
 			y = y0
 			while x_moins > x_field[0]:
-				x_moins,y = Propagation(f, x_moins, y, - eps1/10, eps2, c)
+				x_moins,y = Propagation(f, x_moins, y, - eps1/100, eps2, c)
 				if abs(y) >= 10**6 : break
 				Liste_x.append(x_moins)
 				Liste_y.append(y)
@@ -137,7 +143,7 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 				if abs(y) >= 10**6 : break
 				Liste_x.append(x_plus)
 				Liste_y.append(y)
-
+			if k==293 : print('ok')
 	return Liste_x, Liste_y
 
 def affiche_ligne(f, Liste_c = [0], x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
@@ -150,6 +156,8 @@ def affiche_ligne(f, Liste_c = [0], x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3,
 		print(c)
 		Liste_x,Liste_y = ligne_niveau(f, c, x_lim, y_lim, eps1, eps2)
 		plt.plot(Liste_x,Liste_y, marker = '.', linestyle = ' ', label = f"{c}")
+		plt.xlim(x_lim[0], x_lim[1])
+		plt.ylim(y_lim[0], y_lim[1])
 		plt.legend(loc=1)
 	plt.show()
 
