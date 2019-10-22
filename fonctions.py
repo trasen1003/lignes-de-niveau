@@ -60,6 +60,22 @@ def derive(f, axis, x0, y0):
 	if axis == 'x':
 		return (f(x0+10**-4,y0)-f(x0,y0))/(10**-4)
 
+def derive_amelioree(f, axis, x0, y0):
+    def d1(f,a,h):
+        """dérivée de f avec un schéma d'ordre 1"""
+        return (f(a+h) - f(a))/h
+
+    def d2(f,a,h):
+        """dérivée de f avec un schéma d'ordre 2"""
+        return (f(a+h)-f(a-h))/(2*h)
+    def d(f,a):
+        pass
+    if axis == 'y':
+    	return d2(lambda y : f(x0,y),y0,10**(-4))
+    if axis == 'x':
+    	return d2(lambda x : f(x,y0),x0,10**(-4))
+
+
 def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 2**-26, c = 0):
 	""" f est la fonction à tester et c la ligne de niveau recherchée, bornes_x et bornes_y définissent le domaine
 	de recherche de la graine du processus, pas définit le pas de recherche et eps la precision de la dichotomie"""
