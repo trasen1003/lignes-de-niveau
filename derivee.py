@@ -2,31 +2,41 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def d1(f,a,h):
+    """dérivée de f avec un schéma d'ordre 1"""
     return (f(a+h) - f(a))/h
 
-def dd(f,a,h,d):
-    """dérivée de f avec une erreur en O(h^(d+1)) (sans prendre en compte l'erreur causée par les erreurs d'arrondies"""
-    if d == 1:
-        return d1(f,a,h)
-    else:
-         return (dd(f,a,h,d-1)+dd(f,a,(-h),d-1))/2
+def d2(f,a,h):
+    """dérivée de f avec un schéma d'ordre 2"""
+    return (f(a+h)-f(a-h))/(2*h)
 
-def comparer(f,a,d):
-    """compare les erreurs d'approximation de la dérivée de f en a de dd pour différentes valeurs de d sur pour différentes valeurs de h"""
+def comparer(f,a,res):
+    """compare les erreurs d'approximation de la dérivée de f en a de d1 et d2 pour différentes valeurs de h"""
     X = []
-    L = [[] for i in range(d)]
+    L = [[],[]]
     for i in range(19):
-        for k in range(10):
+        for k in range(1,10):
             h = k*10**(-i)
             X.append(h)
-            for l in range(d):
-                L[l].append(np.abs(dd(f,a,h,l+1)-f(a))) #f'(a) = f(a) pour l'exp, il faudrait utiliser autograd pour avoir une vraie valeur
+            L[0].append(np.abs(d1(f,a,h)-res)) 
+            L[1].append(np.abs(d2(f,a,h)-res)) 
+
 
     ax = plt.gca()
+    plt.xlabel("h")
+    plt.ylabel("erreur")
     ax.set_yscale('log')
     ax.set_xscale('log')
-    for l in range(d):
-        plt.plot(X,L[l]) 
+    plt.plot(X,L[0],'.',label = "premier ordre")
+    plt.plot(X,L[1],'.',label = "deuxième ordre") 
+    plt.legend()
     plt.show()
 
-comparer(np.exp,((2)),2)
+x = 0
+f = lambda x,y : np.cos(x)*np.sin(y)
+def fy(y):
+    return f(x,y)
+
+comparer(np.exp,2,np.exp(2))
+
+
+
