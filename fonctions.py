@@ -89,8 +89,10 @@ def Propagation(f, x0, y0, eps1, eps2, c = 0):
 	y = y0
 	x = x0 + eps1
 	nb_derive = derive(g,x0,y0)
+	
 	def psi(w):
 		return w - 1/nb_derive*g(x,w)
+		
 	while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
 		y = psi(y)
 	
@@ -125,8 +127,8 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 	for x_field, y_field in Liste_domaine:
 		k += 1
 		# print(k)
-		if find_seed_global(f, x_field, y_field, eps1/100, eps2, c) != None:
-			x0, y0 = find_seed_global(f, x_field, y_field, eps1/100, eps2, c)
+		if find_seed_global(f, x_field, y_field, eps1/10, eps2, c) != None:
+			x0, y0 = find_seed_global(f, x_field, y_field, eps1/10, eps2, c)
 			Liste_x.append(x0)
 			Liste_y.append(y0)
 			x_plus = x0
