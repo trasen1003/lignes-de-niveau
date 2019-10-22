@@ -37,11 +37,10 @@ def find_seed(f, c = 0, axis = 'x', value = 0, start = 0, end = 1,  eps = 2**-26
 def dichotomie(f, axis, value, a, b, eps):
 	
 	"""a est la position où f est positif et b la position où f est négatif"""
-
 	if axis == 'x':
 		while abs(b-a) > eps :
 			milieu = (b + a)/2
-			if f(milieu,value) > 0:
+			if f(milieu,value) >= 0:
 				a = milieu
 			else :
 				b = milieu
@@ -55,11 +54,13 @@ def dichotomie(f, axis, value, a, b, eps):
 				b = milieu
 		return (a+b)/2
 
-def derive(f, x0, y0):
-	return (f(x0,y0+10**-4)-f(x0,y0))/(10**-4)
+def derive(f, axis, x0, y0):
+	if axis == 'y':
+		return (f(x0,y0+10**-4)-f(x0,y0))/(10**-4)
+	if axis == 'x':
+		return (f(x0+10**-4,y0)-f(x0,y0))/(10**-4)
 
 def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 2**-26, c = 0):
-
 	""" f est la fonction à tester et c la ligne de niveau recherchée, bornes_x et bornes_y définissent le domaine
 	de recherche de la graine du processus, pas définit le pas de recherche et eps la precision de la dichotomie"""
 
@@ -79,24 +80,44 @@ def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 
 		y_value += pas
 
 	if y_value <= bornes_y[1] : ## Une graine a été trouvée
-		return (y_value, find_seed(f, c, 'y', y_value, bornes_x[0], bornes_x[1], eps))
+		return (find_seed(f, c, 'y', y_value, bornes_x[0], bornes_x[1], eps), y_value)
 
 	return None
 
-def Propagation(f, x0, y0, eps1, eps2, c = 0):
+def Propagation(f, axis, x0, y0, eps1, eps2, c = 0):
+	if axis!= 'x' and axis != 'y' : raise ValueError('Axis mal donné')
+	
 	def g(p,q) : return f(p,q) - c
+	
 	t1 = time.time()
-	y = y0
-	x = x0 + eps1
-	nb_derive = derive(g,x0,y0)
 	
-	def psi(w):
-		return w - 1/nb_derive*g(x,w)
+	if axis == 'y' : 
+		y = y0
+		x = x0 + eps1
+	
+	if axis == 'x':
+		x = x0
+		y = y0 + eps1
+	
+	nb_derive = derive(g,axis,x0,y0)
+	
+	if axis == 'y':
+		def psi(w):
+			return w - 1/nb_derive*g(x,w)
 		
-	while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
-		y = psi(y)
-	
-	if time.time() - t1 >= 10**-3 : return x,10**7
+		while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
+			y = psi(y)
+		
+		if time.time() - t1 >= 10**-3 : return x,10**7
+
+	if axis == 'x':
+		def psi(w):
+			return w - 1/nb_derive*g(w,y)
+		
+		while abs(g(x,y))>eps2 and abs(x) < 10**6 and time.time()-t1 < 10**-3:
+			x = psi(x)
+		
+		if time.time() - t1 >= 10**-3 : return 10**7,y
 	
 	return x,y 
 
@@ -135,16 +156,29 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 			x_moins = x0
 			y = y0
 			while x_moins > x_field[0]:
-				x_moins,y = Propagation(f, x_moins, y, - eps1/100, eps2, c)
+				x_moins,y = Propagation(f, 'y', x_moins, y, - eps1/100, eps2, c)
 				if abs(y) >= 10**6 : break
 				Liste_x.append(x_moins)
 				Liste_y.append(y)
 			y = y0
 			while x_plus < x_field[1]:
-				x_plus,y = Propagation(f, x_plus, y, eps1/10, eps2, c)
+				x_plus,y = Propagation(f, 'y', x_plus, y, eps1/10, eps2, c)
 				if abs(y) >= 10**6 : break
 				Liste_x.append(x_plus)
 				Liste_y.append(y)
+			x = x0
+			y_moins = y0
+			y_plus = y0
+			while y_moins > y_field[0]:
+				x,y_moins = Propagation(f, 'x', x, y_moins, -eps1/10, eps2, c)
+				if abs(x) >= 10**6 : break
+				Liste_x.append(x)
+				Liste_y.append(y_moins)
+			while y_plus < y_field[1]:
+				x,y_plus = Propagation(f, 'x', x, y_plus, eps1/10, eps2, c)
+				if abs(x) >= 10**6 : break
+				Liste_x.append(x)
+				Liste_y.append(y_plus)
 			if k==293 : print('ok')
 	return Liste_x, Liste_y
 
