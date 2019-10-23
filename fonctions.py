@@ -163,7 +163,6 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 	k = 0
 	for x_field, y_field in Liste_domaine:
 		k += 1
-		# print(k)
 		if find_seed_global(f, x_field, y_field, eps1/10, eps2, c) != None:
 			x0, y0 = find_seed_global(f, x_field, y_field, eps1/10, eps2, c)
 			Liste_x.append(x0)
@@ -195,7 +194,6 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 				if abs(x) >= 10**6 : break
 				Liste_x.append(x)
 				Liste_y.append(y_plus)
-			if k==293 : print('ok')
 	return Liste_x, Liste_y
 
 def affiche_ligne(f, Liste_c = [0], x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
