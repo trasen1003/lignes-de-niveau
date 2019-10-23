@@ -60,6 +60,22 @@ def derive(f, axis, x0, y0):
 	if axis == 'x':
 		return (f(x0+10**-4,y0)-f(x0,y0))/(10**-4)
 
+def derive_amelioree(f, axis, x0, y0):
+    def d1(f,a,h):
+        """dérivée de f avec un schéma d'ordre 1"""
+        return (f(a+h) - f(a))/h
+
+    def d2(f,a,h):
+        """dérivée de f avec un schéma d'ordre 2"""
+        return (f(a+h)-f(a-h))/(2*h)
+    def d(f,a):
+        pass
+    if axis == 'y':
+    	return d2(lambda y : f(x0,y),y0,10**(-4))
+    if axis == 'x':
+    	return d2(lambda x : f(x,y0),x0,10**(-4))
+
+
 def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 2**-26, c = 0):
 	""" f est la fonction à tester et c la ligne de niveau recherchée, bornes_x et bornes_y définissent le domaine
 	de recherche de la graine du processus, pas définit le pas de recherche et eps la precision de la dichotomie"""
@@ -138,6 +154,7 @@ def decoupe(x_lim = [0,1], y_lim = [0,1], eps = 10**-3) :
 		x += eps
 
 	return Liste_domaine	
+	
 
 def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
 	Liste_x = []
@@ -147,7 +164,6 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 	k = 0
 	for x_field, y_field in Liste_domaine:
 		k += 1
-		# print(k)
 		if find_seed_global(f, x_field, y_field, eps1/10, eps2, c) != None:
 			x0, y0 = find_seed_global(f, x_field, y_field, eps1/10, eps2, c)
 			Liste_x.append(x0)
@@ -179,7 +195,6 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 				if abs(x) >= 10**6 : break
 				Liste_x.append(x)
 				Liste_y.append(y_plus)
-			if k==293 : print('ok')
 	return Liste_x, Liste_y
 
 def affiche_ligne(f, Liste_c = [0], x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):

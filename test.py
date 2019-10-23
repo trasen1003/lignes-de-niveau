@@ -19,6 +19,9 @@ def h(x,y):
 def i(x,y):
 	return cos(x)*sin(y)
 
+def j(x,y):
+	return sin(x)/y
+
 eps1 = 10 ** -2
 eps2 = 10 ** -5
 
@@ -42,7 +45,7 @@ eps2 = 10 ** -5
 ## test des fonctions
 
 
-affiche_ligne(h, [0], [-0.5,.5], [-.5,.5], eps1, eps2)
+affiche_ligne(j, [1], [-5,5], [0.01,1.1], eps1, eps2)
 #Liste_num = [(Liste_x[k],Liste_y[k]) for k in range(len(Liste_y))]
 #Liste_abscisse = [k for k in range(len(Liste_num))]
 #Liste_ordonnee = [(f(num[0],num[1])-0.5) for num in Liste_num]
