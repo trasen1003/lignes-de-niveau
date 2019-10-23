@@ -154,6 +154,7 @@ def decoupe(x_lim = [0,1], y_lim = [0,1], eps = 10**-3) :
 		x += eps
 
 	return Liste_domaine	
+	
 
 def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
 	Liste_x = []
