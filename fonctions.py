@@ -164,6 +164,12 @@ def Propagation(f, axis, x0, y0, eps1, eps2, c = 0):
 	
 	return x,y 
 
+def Jacobienne(f, x, y):
+	
+
+def Propagation2(f, x0, y0, eps1, eps2, c = 0):
+
+
 def decoupe(x_lim = [0,1], y_lim = [0,1], eps = 10**-3) :
 	Liste_domaine = []
 
@@ -223,6 +229,19 @@ def ligne_niveau(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2
 				Liste_x.append(x)
 				Liste_y.append(y_plus)
 	return Liste_x, Liste_y
+
+def ligne_niveau2(f, c = 0, x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
+	Liste_x = []
+	Liste_y = []
+
+	Liste_domaine = decoupe(x_lim, y_lim, eps1)
+	k = 0
+	for x_field, y_field in Liste_domaine:
+		k += 1
+		if find_seed_global(f, x_field, y_field, eps1/10, eps2, c) != None:
+			x, y = find_seed_global(f, x_field, y_field, eps1/10, eps2, c)
+			while x_field[0] <= x and x <= x_field[1] and y_field[0] <= y and y <= y_field[1] :
+				x, y = Propagation2()
 
 def affiche_ligne(f, Liste_c = [0], x_lim = [0,1], y_lim = [0,1], eps1 = 10**-3, eps2 = 2**-26):
 
