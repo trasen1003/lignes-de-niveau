@@ -68,12 +68,39 @@ def derive_amelioree(f, axis, x0, y0):
     def d2(f,a,h):
         """dérivée de f avec un schéma d'ordre 2"""
         return (f(a+h)-f(a-h))/(2*h)
-    def d(f,a):
-        pass
-    if axis == 'y':
-    	return d2(lambda y : f(x0,y),y0,10**(-4))
-    if axis == 'x':
-    	return d2(lambda x : f(x,y0),x0,10**(-4))
+
+    def dd2(f,a):
+        """dérivée seconde de f en h avec des schémas d'ordre 2"""
+        h = 10**(-4) 
+        return (d2(f,a+h,h)-d2(f,a-h,h))/(2*h)
+
+    def ddd2(f,a):
+        """dérivée troisième de f en h avec des schémas d'ordre 2"""
+        h = 10**(-4)
+        return (dd2(f,a+h)-dd2(f,a-h))/(2*h)
+
+    def d(f):
+        if axis == 'y':
+            g = lambda y : f(x0,y)
+            a = y0
+            g3 = ddd2(g,a)
+            if g3 != 0:
+                h = ((2**(-63)*g(a))/g3)**(1/4)
+            else:
+                h = 10**(-3)
+            return d2(g,y0,h)
+        if axis == 'x':
+            g = lambda x : f(x,y0)
+            a = x0
+            g3 = ddd2(g,a)
+            print(g(a),ddd2(g,a))
+            if g3 != 0:
+                h = ((2**(-63)*g(a))/g3)**(1/4)
+            else:
+                h = 10**(-3)
+            return d2(g,x0,h)
+
+    return d(f)
 
 
 def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 2**-26, c = 0):
