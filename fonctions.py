@@ -1,3 +1,11 @@
+#import
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+from math import *
+import time
+from fonctions import *
+
 ## Fonctions importantes
 
 def transformation(f, c):
@@ -63,9 +71,13 @@ def derive(f, axis, x0, y0):
 def derive_amelioree(f, axis, x0, y0):
     def d1(f,a,h):
         """dérivée de f avec un schéma d'ordre 1"""
+        if h == 0: #si le h est considéré comme nul (trop petit)
+            h = 10**(-4)
         return (f(a+h) - f(a))/h
 
     def d2(f,a,h):
+        if h == 0: #si le h est considéré comme nul (trop petit)
+            h = 10**(-4)
         """dérivée de f avec un schéma d'ordre 2"""
         return (f(a+h)-f(a-h))/(2*h)
 
@@ -85,7 +97,7 @@ def derive_amelioree(f, axis, x0, y0):
             a = y0
             g3 = ddd2(g,a)
             if g3 != 0:
-                h = ((2**(-63)*g(a))/g3)**(1/4)
+                h = (2**(-63)*abs((g(a))/g3))**(1/4)
             else:
                 h = 10**(-3)
             return d2(g,y0,h)
@@ -93,13 +105,12 @@ def derive_amelioree(f, axis, x0, y0):
             g = lambda x : f(x,y0)
             a = x0
             g3 = ddd2(g,a)
-            print(g(a),ddd2(g,a))
             if g3 != 0:
-                h = ((2**(-63)*g(a))/g3)**(1/4)
+                h = (2**(-63)*abs(g(a)/g3))**(1/4)
             else:
                 h = 10**(-3)
             return d2(g,x0,h)
-
+    
     return d(f)
 
 
@@ -128,41 +139,44 @@ def find_seed_global(f, bornes_x = [0,1], bornes_y = [0,1], pas = 10**-3, eps = 
 	return None
 
 def Propagation(f, axis, x0, y0, eps1, eps2, c = 0):
-	if axis!= 'x' and axis != 'y' : raise ValueError('Axis mal donné')
-	
-	def g(p,q) : return f(p,q) - c
-	
-	t1 = time.time()
-	
-	if axis == 'y' : 
-		y = y0
-		x = x0 + eps1
-	
-	if axis == 'x':
-		x = x0
-		y = y0 + eps1
-	
-	nb_derive = derive(g,axis,x0,y0)
-	
-	if axis == 'y':
-		def psi(w):
-			return w - 1/nb_derive*g(x,w)
-		
-		while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
-			y = psi(y)
-		
-		if time.time() - t1 >= 10**-3 : return x,10**7
+    if axis!= 'x' and axis != 'y' : raise ValueError('Axis mal donné')
 
-	if axis == 'x':
-		def psi(w):
-			return w - 1/nb_derive*g(w,y)
-		
-		while abs(g(x,y))>eps2 and abs(x) < 10**6 and time.time()-t1 < 10**-3:
-			x = psi(x)
-		
-		if time.time() - t1 >= 10**-3 : return 10**7,y
-	
-	return x,y 
+    def g(p,q) : return f(p,q) - c
+
+    t1 = time.time()
+
+    if axis == 'y' : 
+        y = y0
+        x = x0 + eps1
+
+    if axis == 'x':
+        x = x0
+        y = y0 + eps1
+
+    nb_derive = derive_amelioree(g,axis,x0,y0)
+
+    if axis == 'y':
+        if nb_derive == 0 :
+            return x,10**7	
+        def psi(w):
+            return w - 1/nb_derive*g(x,w)
+
+        while abs(g(x,y))>eps2 and abs(y) < 10**6 and time.time()-t1 < 10**-3:
+            y = psi(y)
+
+        if time.time() - t1 >= 10**-3 : return x,10**7
+
+    if axis == 'x':
+        if nb_derive == 0 : return 10**7,y
+        def psi(w):
+            return w - 1/nb_derive*g(w,y)
+
+        while abs(g(x,y))>eps2 and abs(x) < 10**6 and time.time()-t1 < 10**-3:
+            x = psi(x)
+
+        if time.time() - t1 >= 10**-3 : return 10**7,y
+
+    return x,y 
 
 def Jacobienne(f, x, y):
 	
