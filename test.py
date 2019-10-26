@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from math import *
 import time
+from fonctions import *
 ## Fonction de test et constantes
 
 def f(x,y):
@@ -20,7 +21,7 @@ def i(x,y):
 	return cos(x)*sin(y)
 
 def j(x,y):
-	if y!=0 : return abs(sin(x))/y
+    if y!=0 : return abs(sin(x))/y
 
 eps1 = 10 ** -2
 eps2 = 10 ** -5
@@ -45,7 +46,7 @@ eps2 = 10 ** -5
 ## test des fonctions
 
 
-affiche_ligne(j, [1], [-10,10], [0.00001,1.1], eps1, eps2)
+affiche_ligne(i, [-0.5,-0.3,0.3,0.5], [-4,4], [-4,4], eps1, eps2)
 #Liste_num = [(Liste_x[k],Liste_y[k]) for k in range(len(Liste_y))]
 #Liste_abscisse = [k for k in range(len(Liste_num))]
 #Liste_ordonnee = [(f(num[0],num[1])-0.5) for num in Liste_num]
