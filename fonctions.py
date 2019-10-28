@@ -179,10 +179,9 @@ def Propagation(f, axis, x0, y0, eps1, eps2, c = 0):
     return x,y 
 
 def Jacobienne(f, x, y):
-	
-
+    pass
 def Propagation2(f, x0, y0, eps1, eps2, c = 0):
-
+    pass
 
 def decoupe(x_lim = [0,1], y_lim = [0,1], eps = 10**-3) :
 	Liste_domaine = []

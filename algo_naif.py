@@ -11,7 +11,6 @@ def ligne_de_niveau(f,c,N1,N2,tolerance,iX = [-10,10],iY = [-10,10]):
     tab = F(tab[:,:,0],tab[:,:,1])
     res = np.abs(tab - c*np.ones((N1,N2))) <= tolerance*np.ones((N1,N2)) 
     return res
-    #plt.imshow(res)
-    #plt.show()
 
-#ligne_de_niveau(lambda x,y : np.cos(x**2 + y**2),0,1000,1000,0.01)
+plt.imshow(ligne_de_niveau(lambda x,y : np.cos(x**2 + y**2),0,1000,1000,0.04))
+plt.show()
