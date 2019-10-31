@@ -22,6 +22,14 @@ def i(x,y):
 
 def j(x,y):
     if y!=0 : return abs(sin(x))/y
+    
+    
+
+def k(x,y):
+    return exp(-(x**2+y**2))
+
+def l(x,y):
+    return 2*(k(x,y) - k(x-1,y-1))
 
 eps1 = 10 ** -2
 eps2 = 10 ** -5
@@ -46,7 +54,7 @@ eps2 = 10 ** -5
 ## test des fonctions
 
 
-affiche_ligne(i, [-0.5,-0.3,0.3,0.5], [-4,4], [-4,4], eps1, eps2)
+affiche_ligne(l, np.linspace(-1.5,1.5,7) , [-2,3], [-1,2], eps1, eps2)
 #Liste_num = [(Liste_x[k],Liste_y[k]) for k in range(len(Liste_y))]
 #Liste_abscisse = [k for k in range(len(Liste_num))]
 #Liste_ordonnee = [(f(num[0],num[1])-0.5) for num in Liste_num]
